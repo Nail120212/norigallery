@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexxto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0c0d;
+  --surface: #111113;
+  --surface-2: #161618;
+  --border: #1f1f22;
+  --border-soft: #19191c;
+  --text: #e8e8ea;
+  --text-dim: #5a5a62;
+  --text-muted: #2e2e34;
+  --accent: #888888;
+  --accent-dim: #555555;
+  --green: #4ade80;
+  --mono: 'DM Mono', monospace;
+  --display: 'Syne', sans-serif;
+}
+
+*, *::before, *::after {
+  margin: 0; padding: 0; box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0 32px;
+  height: 60px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(12, 12, 13, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-names {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.logo-title {
+  font-family: var(--display);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text);
+  line-height: 1;
+}
+
+.logo-sub {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.header-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header-username {
+  font-family: var(--display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.04em;
+  display: none;
+}
+
+.header-date {
+  font-size: 9px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+.header-right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.header-count {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 0.08em;
+  display: none;
+  align-items: center;
+  gap: 7px;
+}
+
+.header-count-dot {
+  width: 5px;
+  height: 5px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+main {
+  padding: 40px 32px 80px;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+#loading, #empty, #error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  gap: 16px;
+  text-align: center;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 1.5px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 8px;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+#content { display: none; }
+
+.bar {
+  margin-bottom: 28px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border-soft);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  padding: 8px 18px;
+  font-size: 11px;
+  font-family: var(--mono);
+  cursor: pointer;
+  text-decoration: none;
+  letter-spacing: 0.08em;
+  outline: none;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  border-color: #3a3a3e;
+  color: var(--text);
+  background: var(--surface);
+}
+
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #0c0c0d;
+  font-weight: 600;
+}
+
+.btn-primary:hover {
+  background: #aaaaaa;
+  border-color: #aaaaaa;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1px;
+  background: var(--border-soft);
+  border: 1px solid var(--border-soft);
+}
+
+.card {
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  transition: background 0.15s;
+}
+
+.card:hover { background: var(--surface); }
+
+.card-img {
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.2s ease;
+}
+
+.card:hover .card-img img { transform: scale(1.04); }
+
+.card-foot {
+  padding: 10px 11px 11px;
+  border-top: 1px solid var(--border-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card-id {
+  font-size: 10px;
+  color: var(--text-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+  font-family: var(--mono);
+}
+
+.copy-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
+  padding: 6px;
+  background: none;
+  border: 1px solid var(--border-soft);
+  color: var(--text-muted);
+  font-size: 9px;
+  font-family: var(--mono);
+  cursor: pointer;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  outline: none;
+  transition: all 0.15s;
+}
+
+.copy-btn:hover {
+  border-color: #333338;
+  color: var(--text-dim);
+  background: var(--surface-2);
+}
+
+@media (max-width: 600px) {
+  header { padding: 0 20px; grid-template-columns: auto 1fr auto; gap: 8px; }
+  main { padding: 28px 20px 60px; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-names">
+      <span class="logo-title">Nexxto</span>
+      <span class="logo-sub">Sticker Gallery</span>
+    </div>
+  </div>
+
+  <div class="header-center">
+    <div class="header-username" id="header-username"></div>
+    <div class="header-date" id="header-date"></div>
+  </div>
+
+  <div class="header-right">
+    <div class="header-count" id="hcount">
+      <div class="header-count-dot"></div>
+      <span id="hcount-text"></span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div id="loading">
+    <div class="spinner"></div>
+    <div class="state-title">Fetching stickers...</div>
+    <div class="state-sub">Hang tight while we load the paste.</div>
+  </div>
+
+  <div id="empty" style="display:none">
+    <div class="state-title">Nexxto Gallery</div>
+  </div>
+
+  <div id="error" style="display:none">
+    <div class="state-title">Could not load</div>
+    <div class="state-sub">The paste may be invalid, expired, or unreachable.</div>
+  </div>
+
+  <div id="content">
+    <div class="bar">
+      <button class="btn btn-primary" id="copy-all">
+        <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1"/><path d="M8 4V2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h2"/></svg>
+        Copy All IDs
+      </button>
+      <a href="#" class="btn" id="raw-link" target="_blank">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Raw
+      </a>
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+</main>
+
+<script>
+const pasteId = new URLSearchParams(location.search).get('id');
+
+function showState(el) {
+  ['loading','empty','error','content'].forEach(x => {
+    document.getElementById(x).style.display = (x === el) ? (el === 'content' ? 'block' : 'flex') : 'none';
+  });
+}
+
+function copyText(text, btn) {
+  const fallback = () => {
+    const ta = Object.assign(document.createElement('textarea'), { value: text, style: 'position:fixed;opacity:0' });
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+  };
+  (navigator.clipboard ? navigator.clipboard.writeText(text).catch(fallback) : Promise.resolve(fallback())).then(() => {
+    if (!btn) return;
+    const orig = btn.innerHTML;
+    btn.innerHTML = btn.innerHTML.replace(/Copy[\w\s]*/i, 'Copied!');
+    setTimeout(() => { btn.innerHTML = orig; }, 1500);
+  });
+}
+
+function parseIds(t) {
+  return t.match(/\d{6,}/g) || [];
+}
+
+async function tryFetch(url) {
+  const proxies = [url, `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}` ];
+  for (const u of proxies) {
+    try {
+      const r = await fetch(u);
+      if (r.ok) { const t = await r.text(); if (t) return t; }
+    } catch (_) {}
+  }
+  return null;
+}
+
+async function init() {
+  if (!pasteId) { showState('empty'); return; }
+
+  const rawUrl = `https://pastefy.app/${pasteId}/raw`;
+  document.getElementById('raw-link').href = rawUrl;
+  
+  const text = await tryFetch(rawUrl);
+  if (!text) { showState('error'); return; }
+
+  const ids = parseIds(text);
+  if (!ids.length) { showState('error'); return; }
+
+  const usernameEl = document.getElementById('header-username');
+  usernameEl.textContent = (text.match(/^Stickers from:\s*(.+)$/m) || [])[1]?.trim() || 'Sticker Pack';
+  usernameEl.style.display = 'block';
+
+  document.getElementById('hcount-text').textContent = `${ids.length} Stickers`;
+  document.getElementById('hcount').style.display = 'flex';
+  document.getElementById('copy-all').onclick = function() { copyText(ids.join('\n'), this); };
+
+  const grid = document.getElementById('grid');
+  ids.forEach(id => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="card-img">
+        <img id="img-${id}" src="https://placehold.co/420x420/111/444?text=..." loading="lazy">
+      </div>
+      <div class="card-foot">
+        <div class="card-id">${id}</div>
+        <button class="copy-btn">Copy ID</button>
+      </div>`;
+    card.querySelector('.copy-btn').onclick = () => copyText(id, card.querySelector('.copy-btn'));
+    grid.appendChild(card);
+  });
+
+  showState('content');
+
+  for (let i = 0; i < ids.length; i += 100) {
+    const chunk = ids.slice(i, i + 100);
+    const proxyUrl = `https://thumbnails.roproxy.com/v1/assets?assetIds=${chunk.join(',')}&returnPolicy=PlaceHolder&size=420x420&format=Png`;
+    
+    fetch(proxyUrl)
+      .then(r => r.json())
+      .then(data => {
+        if (data && data.data) {
+          data.data.forEach(item => {
+            const imgElement = document.getElementById(`img-${item.targetId}`);
+            if (imgElement) {
+              imgElement.src = item.state === "Completed" ? item.imageUrl : "https://placehold.co/420x420/111/ff3333?text=N/A";
+            }
+          });
+        }
+      }).catch(console.error);
+  }
+}
+
+init();
+</script>
+</body>
+  </html>
