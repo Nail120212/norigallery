@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexxToHubOnTop - Sticker Gallery</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<style> body{font-family:'Space Grotesk',sans-serif; background:#0a0a0a; color:white;} </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-6">
+  <div class="w-full max-w-[600px]">
+    <h1 class="text-2xl font-bold text-center mt-6 mb-1">NEXXTOHUBONTOP</h1>
+    <p class="text-center text-zinc-500 text-xs mb-6 tracking-widest">STICKER GALLERY</p>
+
+    <div class="bg-zinc-900 rounded-[24px] p-6 border border-zinc-800">
+      <div class="flex items-center gap-4">
+        <img id="avatar" src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-.../420/420/AvatarHeadshot/Png/noFilter" class="w-16 h-16 rounded-full bg-zinc-800 object-cover border-2 border-zinc-700"/>
+        <div>
+          <h2 id="username" class="text-lg font-bold">@username</h2>
+          <p id="displayName" class="text-zinc-400 text-sm">DisplayName</p>
+          <p id="time" class="text-[11px] text-zinc-500 mt-1">—</p>
+        </div>
+        <div class="ml-auto">
+          <span id="count" class="bg-white text-black text-xs font-bold px-3 py-1 rounded-full">0 stickers</span>
+        </div>
+      </div>
+
+      <div id="stickerGrid" class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-6">
+        <!-- stickers injected here -->
+      </div>
+
+      <button onclick="downloadAll()" class="w-full mt-6 bg-white text-black rounded-xl py-3.5 font-bold text-sm hover:bg-zinc-200 transition flex items-center justify-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+        Download All (Google Drive Style)
+      </button>
+
+      <div id="raw" class="mt-4 bg-black rounded-xl p-3 text-[10px] font-mono text-zinc-500 break-all max-h-24 overflow-auto hidden"></div>
+    </div>
+
+    <div class="mt-6 bg-[#5865F2]/10 border border-[#5865F2]/20 rounded-2xl p-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-[#5865F2] flex items-center justify-center font-bold">N</div>
+        <div>
+          <p class="font-bold text-sm">Join our Discord</p>
+          <p class="text-[11px] text-zinc-400">dsc.gg/nexxto • Get key & updates</p>
+        </div>
+      </div>
+      <a href="https://dsc.gg/nexxto" target="_blank" class="bg-[#5865F2] text-white px-4 py-2 rounded-full text-xs font-bold hover:bg-[#4752c4]">Join</a>
+    </div>
+
+    <p class="text-center text-[10px] text-zinc-600 mt-6">© 2026 NexxToHubOnTop • All rights reserved</p>
+  </div>
+
+<script>
+async function loadStickers(){
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('Id') || params.get('id') || window.location.pathname.split('/').pop();
+  let data = null;
+
+  if(window.location.hash){
+    try{ data = JSON.parse(atob(window.location.hash.slice(1))); }catch{}
+  }
+
+  if(!data && id && id !== 'sgallery.html' && id !== 'SG'){
+    try{
+      const res = await fetch(`https://pastefy.app/api/v2/paste/${id}`);
+      const j = await res.json();
+      let content = j.content || j.paste?.content || j.raw;
+      if(typeof content === 'string'){
+        try{ data = JSON.parse(content); }catch{ data = {stickers: [content]} }
+      } else data = content;
+    }catch(e){ console.error(e) }
+  }
+
+  if(!data){
+    data = {
+      player: "UnknownPlayer",
+      displayName: "Unknown",
+      userId: 0,
+      date: new Date().toLocaleString(),
+      stickers: ["rbxassetid://12345678","rbxassetid://87654321"],
+      ids: ["12345678","87654321"]
+    };
+  }
+
+  const target = data.player || data.target || data.username || "Unknown";
+  const display = data.displayName || target;
+  const userId = data.userId || data.user_id || 0;
+
+  let avatarUrl = "https://tr.rbxcdn.com/30DAY-AvatarHeadshot-...";
+  if(userId){
+    try{
+      const thumb = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=420x420&format=Png&isCircular=false`).then(r=>r.json());
+      avatarUrl = thumb.data[0].imageUrl;
+    }catch{}
+  }
+
+  document.getElementById('avatar').src = avatarUrl;
+  document.getElementById('username').innerText = target;
+  document.getElementById('displayName').innerText = display;
+  document.getElementById('time').innerText = data.date || new Date().toLocaleString();
+
+  const stickers = data.stickers || data.ids || [];
+  document.getElementById('count').innerText = stickers.length + " stickers";
+
+  const grid = document.getElementById('stickerGrid');
+  grid.innerHTML = "";
+  stickers.forEach((s,i)=>{
+    const idOnly = (s.match(/\\d+/)||[s])[0];
+    const div = document.createElement('div');
+    div.className = "bg-zinc-800 rounded-xl p-3 border border-zinc-700/50 hover:border-zinc-600 transition";
+    div.innerHTML = `
+      <div class="aspect-square bg-black rounded-lg flex items-center justify-center overflow-hidden">
+        <img src="https://assetdelivery.roblox.com/v1/asset/?id=${idOnly}" onerror="this.src='https://via.placeholder.com/150'" class="w-full h-full object-contain"/>
+      </div>
+      <p class="text-[10px] font-mono text-zinc-400 mt-2 truncate">${s}</p>
+      <button onclick="navigator.clipboard.writeText('${s}')" class="w-full mt-2 bg-zinc-700 hover:bg-zinc-600 rounded-lg py-1.5 text-[11px] font-bold">Copy ID</button>
+    `;
+    grid.appendChild(div);
+  });
+
+  window.__allStickers = stickers;
+  document.getElementById('raw').innerText = JSON.stringify(stickers, null, 2);
+}
+
+function downloadAll(){
+  const text = (window.__allStickers||[]).join("\\n");
+  const blob = new Blob([text], {type: 'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `stickers-${document.getElementById('username').innerText}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+loadStickers();
+</script>
+</body>
+</html>
