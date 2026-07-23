@@ -1,0 +1,21 @@
+const express=require('express');
+const path=require('path');
+const app=express();
+app.use(express.static(path.join(__dirname,'public')));
+app.get('/',(req,res)=>res.sendFile(path.join(__dirname,'public','index.html')));
+app.get('/tune',(req,res)=>res.sendFile(path.join(__dirname,'public','tune.html')));
+app.get('/tune/:pasteId',(req,res)=>res.sendFile(path.join(__dirname,'public','tune.html')));
+app.get('/t/:pasteId',(req,res)=>res.sendFile(path.join(__dirname,'public','tune.html')));
+app.get('/sticker',(req,res)=>res.sendFile(path.join(__dirname,'public','sticker.html')));
+app.get('/sticker/:pasteId',(req,res)=>res.sendFile(path.join(__dirname,'public','sticker.html')));
+app.get('/s/:pasteId',(req,res)=>res.sendFile(path.join(__dirname,'public','sticker.html')));
+app.get('/SG/:pasteId',(req,res)=>res.sendFile(path.join(__dirname,'public','sticker.html')));
+app.get('*',(req,res)=>{
+  const p=req.path;
+  if(p.startsWith('/tune')||p.startsWith('/t/'))return res.sendFile(path.join(__dirname,'public','tune.html'));
+  if(p.startsWith('/sticker')||p.startsWith('/s/')||p.startsWith('/SG'))return res.sendFile(path.join(__dirname,'public','sticker.html'));
+  res.sendFile(path.join(__dirname,'public','index.html'));
+});
+const PORT=process.env.PORT||3000;
+if(require.main===module)app.listen(PORT,()=>console.log('Running 3 files on '+PORT));
+module.exports=app;
