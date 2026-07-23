@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><!-- PLAYABLE_TOUCH_PATCH_V1 --><script>
+(function() {
+  if (window.__playableTouchPatchInstalled) return;
+  window.__playableTouchPatchInstalled = true;
+  var origAdd = EventTarget.prototype.addEventListener;
+  var blockedTypes = { touchstart: 1, touchmove: 1, wheel: 1 };
+  EventTarget.prototype.addEventListener = function(type, listener, options) {
+    if (blockedTypes[type]) {
+      if (options === undefined || options === null) {
+        options = { passive: true };
+      } else if (typeof options === 'boolean') {
+        options = { capture: options, passive: true };
+      } else {
+        options = Object.assign({}, options, { passive: true });
+      }
+    }
+    return origAdd.call(this, type, listener, options);
+  };
+})();
+</script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexxto Tune</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:#07070b;color:#e8e8f0;min-height:100vh;padding-bottom:60px;}
+.bg{position:fixed;inset:0;z-index:-1;background:radial-gradient(700px at 50% -10%,#1c1c4a 0%,transparent 60%),#07070b;}
+.top{max-width:640px;margin:0 auto;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;}
+.top a{color:#555;text-decoration:none;font-size:0.85rem;}
+.wrap{max-width:520px;margin:0 auto;padding:10px 16px 40px;}
+.card{background:rgba(19,19,26,0.85);border:1px solid #23233a;border-radius:24px;padding:28px;backdrop-filter:blur(16px);box-shadow:0 10px 40px rgba(0,0,0,0.4);}
+.avatar-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;margin-bottom:8px;}
+.avatar{width:96px;height:96px;border-radius:50%;border:3px solid #2a2a4a;object-fit:cover;background:#1a1a2a;box-shadow:0 0 0 6px rgba(91,110,245,0.08);}
+.info{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;}
+.info .display{font-size:1.35rem;font-weight:800;letter-spacing:-0.02em;}
+.info .username{font-size:0.85rem;color:#666;}
+.info .jeep{margin-top:6px;background:#1a1a3a;border:1px solid #2a2a4a;border-radius:999px;padding:6px 12px;font-size:0.75rem;color:#8b9bff;font-weight:600;}
+.info .time{font-size:0.72rem;color:#444;margin-top:6px;}
+.toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:20px 0 14px;background:#0e0e16;border-radius:14px;padding:6px;border:1px solid #1e1e32;}
+.toggle button{background:transparent;border:none;color:#666;padding:10px;border-radius:10px;font-weight:700;font-size:0.85rem;cursor:pointer;transition:all 0.2s;font-family:inherit;}
+.toggle button.active{background:#5b6ef5;color:#fff;box-shadow:0 4px 16px rgba(91,110,245,0.3);}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.stat{background:#0e0e16;border:1px solid #1e1e32;border-radius:16px;padding:14px 10px;text-align:center;transition:transform 0.15s;}
+.stat:hover{transform:translateY(-1px);border-color:#2a2a4a;}
+.stat .val{font-size:1.05rem;font-weight:800;}
+.stat .key{font-size:0.65rem;color:#555;margin-top:4px;text-transform:uppercase;letter-spacing:0.06em;}
+.divider{border:none;border-top:1px solid #1e1e32;margin:18px 0;}
+.copy-btn{width:100%;background:#fff;color:#07070b;border:none;border-radius:14px;padding:14px;font-size:0.9rem;font-weight:800;cursor:pointer;font-family:inherit;transition:transform 0.1s;}
+.copy-btn:active{transform:scale(0.98);}
+.empty{padding:70px 20px;text-align:center;color:#444;}
+.empty p{font-size:0.9rem;}
+#mainContent{display:none;}
+#emptyState{display:block;}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:#1a1a2a;border:1px solid #2a2a4a;color:#fff;padding:12px 20px;border-radius:12px;font-size:0.85rem;transition:transform 0.3s;z-index:99;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="top"><a href="/">Nexxtohub</a><span style="font-size:0.7rem;color:#333;letter-spacing:0.1em;text-transform:uppercase;">Tune</span></div>
+<div class="wrap">
+<div id="emptyState" class="card"><div class="empty"><p>No tune loaded. Use /tune/PASTEFY_ID</p></div></div>
+<div id="mainContent" class="card">
+<div class="avatar-wrap">
+<img id="avatar" class="avatar" src="https://placehold.co/200x200/13131a/555?text=...">
+<div class="info">
+<div class="display" id="displayName">—</div>
+<div class="username" id="username">—</div>
+<div class="jeep" id="jeep">—</div>
+<div class="time" id="time">—</div>
+</div>
+</div>
+<div class="toggle"><button id="btnFront" class="active" onclick="showFront()">Front Tune</button><button id="btnRear" onclick="showRear()">Rear Tune</button></div>
+<div id="frontStats" class="stats"><div class="stat"><div class="val" id="fh">—</div><div class="key">Height</div></div><div class="stat"><div class="val" id="fs">—</div><div class="key">Stiffness</div></div><div class="stat"><div class="val" id="fd">—</div><div class="key">Dampening</div></div></div>
+<div id="rearStats" class="stats" style="display:none;"><div class="stat"><div class="val" id="rh">—</div><div class="key">Height</div></div><div class="stat"><div class="val" id="rs">—</div><div class="key">Stiffness</div></div><div class="stat"><div class="val" id="rd">—</div><div class="key">Dampening</div></div></div>
+<hr class="divider">
+<button class="copy-btn" onclick="copyCode()">Get Tune Code</button>
+</div>
+</div>
+<div id="toast" class="toast"></div>
+<script>
+function getPasteId(){const p=new URLSearchParams(location.search);if(p.get('id'))return p.get('id');const s=location.pathname.split('/').filter(Boolean);const l=s[s.length-1];if(!l||['tune','t'].includes(l))return null;return l;}
+async function tryFetch(u){const a=[u,`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`];for(const x of a){try{const r=await fetch(x);if(r.ok){const t=await r.text();if(t)return t;}}catch(_){}}return null;}
+function showFront(){document.getElementById('frontStats').style.display='grid';document.getElementById('rearStats').style.display='none';document.getElementById('btnFront').classList.add('active');document.getElementById('btnRear').classList.remove('active');}
+function showRear(){document.getElementById('frontStats').style.display='none';document.getElementById('rearStats').style.display='grid';document.getElementById('btnRear').classList.add('active');document.getElementById('btnFront').classList.remove('active');}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);}
+async function loadTune(){
+  const id=getPasteId();if(!id)return;
+  const text=await tryFetch(`https://pastefy.app/${id}/raw`);
+  if(!text){document.getElementById('emptyState').innerHTML='<div class="empty"><p>Could not load pastefy</p></div>';return;}
+  let d=null;
+  try{d=JSON.parse(text);}catch{try{const m=text.match(/\{[\s\S]*\}/);if(m)d=JSON.parse(m[0]);}catch{}if(!d){const fh=(text.match(/fh;([\d.]+)/)||[])[1];if(fh)d={fh,rh:(text.match(/rh;([\d.]+)/)||[])[1],fs:(text.match(/fs;([\d.]+)/)||[])[1],rs:(text.match(/rs;([\d.]+)/)||[])[1],fd:(text.match(/fd;([\d.]+)/)||[])[1],rd:(text.match(/rd;([\d.]+)/)||[])[1],tuneCode:text};}}
+  if(!d)return;
+  document.getElementById('emptyState').style.display='none';
+  document.getElementById('mainContent').style.display='block';
+  const uid=d.userId||d.targetId;
+  if(uid)fetch(`https://thumbnails.roproxy.com/v1/users/avatar-headshot?userIds=${uid}&size=420x420&format=Png&isCircular=false`).then(r=>r.json()).then(j=>{if(j.data&&j.data[0])document.getElementById('avatar').src=j.data[0].imageUrl;});
+  document.getElementById('displayName').textContent=d.displayName||d.target||'Unknown Player';
+  document.getElementById('username').textContent='@'+(d.target||d.username||'unknown');
+  document.getElementById('jeep').textContent=d.jeepName||d.jeep||'Unknown Jeep';
+  document.getElementById('time').textContent=d.date?new Date(d.date).toLocaleString():'';
+  const fmt=v=>v!=null?parseFloat(v).toFixed(4):'—';
+  document.getElementById('fh').textContent=fmt(d.fh??d.frontHeight);
+  document.getElementById('fs').textContent=fmt(d.fs??d.frontStiffness);
+  document.getElementById('fd').textContent=fmt(d.fd??d.frontDampening);
+  document.getElementById('rh').textContent=fmt(d.rh??d.rearHeight);
+  document.getElementById('rs').textContent=fmt(d.rs??d.rearStiffness);
+  document.getElementById('rd').textContent=fmt(d.rd??d.rearDampening);
+  window.__code=d.tuneCode||`fh;${fmt(d.fh)};rh;${fmt(d.rh)};fs;${fmt(d.fs)};rs;${fmt(d.rs)};fd;${fmt(d.fd)};rd;${fmt(d.rd)}`;
+}
+function copyCode(){if(!window.__code)return;navigator.clipboard.writeText(window.__code).then(()=>toast('Tune code copied'));}
+loadTune();
+</script>
+</body>
+</html>
