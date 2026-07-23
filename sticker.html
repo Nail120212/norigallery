@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><!-- PLAYABLE_TOUCH_PATCH_V1 --><script>
+(function() {
+  if (window.__playableTouchPatchInstalled) return;
+  window.__playableTouchPatchInstalled = true;
+  var origAdd = EventTarget.prototype.addEventListener;
+  var blockedTypes = { touchstart: 1, touchmove: 1, wheel: 1 };
+  EventTarget.prototype.addEventListener = function(type, listener, options) {
+    if (blockedTypes[type]) {
+      if (options === undefined || options === null) {
+        options = { passive: true };
+      } else if (typeof options === 'boolean') {
+        options = { capture: options, passive: true };
+      } else {
+        options = Object.assign({}, options, { passive: true });
+      }
+    }
+    return origAdd.call(this, type, listener, options);
+  };
+})();
+</script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexGallery</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:#07070b;color:#e8e8f0;min-height:100vh;}
+.bg{position:fixed;inset:0;z-index:-1;background:radial-gradient(700px at 20% 0%,#1a1a3a 0%,transparent 60%),radial-gradient(600px at 90% 100%,#1e1e4a 0%,transparent 60%),#07070b;}
+.top{max-width:1100px;margin:0 auto;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;}
+.top a{color:#555;text-decoration:none;font-size:0.85rem;}
+.wrap{max-width:1100px;margin:0 auto;padding:10px 16px 60px;}
+.header{max-width:700px;margin:0 auto 24px;background:rgba(19,19,26,0.8);border:1px solid #23233a;border-radius:20px;padding:20px;display:flex;align-items:center;gap:16px;backdrop-filter:blur(12px);}
+.header img{width:56px;height:56px;border-radius:50%;border:2px solid #2a2a4a;background:#1a1a2a;object-fit:cover;}
+.header .name{font-weight:700;font-size:1.05rem;}
+.header .meta{font-size:0.75rem;color:#666;margin-top:2px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;}
+@media(max-width:600px){.grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));}}
+.box{background:rgba(19,19,26,0.85);border:1px solid #23233a;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;transition:all 0.2s;backdrop-filter:blur(8px);}
+.box:hover{transform:translateY(-2px);border-color:#5b6ef5;box-shadow:0 8px 24px rgba(0,0,0,0.4);}
+.box-img{aspect-ratio:1;background:#0e0e16;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;}
+.box-img img{width:100%;height:100%;object-fit:contain;transition:transform 0.25s;}
+.box:hover .box-img img{transform:scale(1.05);}
+.box-foot{padding:10px 10px 10px;display:flex;flex-direction:column;gap:8px;}
+.box-id{font-size:0.7rem;color:#555;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.copy{width:100%;background:#1a1a2a;border:1px solid #2a2a4a;color:#aaa;padding:8px;border-radius:12px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s;letter-spacing:0.04em;}
+.copy:hover{background:#fff;color:#07070b;border-color:#fff;}
+.empty{max-width:700px;margin:0 auto;background:rgba(19,19,26,0.8);border:1px solid #23233a;border-radius:20px;padding:60px 20px;text-align:center;color:#444;}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="top"><a href="/">Nexxtohub</a></div>
+<div class="wrap">
+<div id="emptyState" class="empty"><p>No sticker gallery loaded. Use /sticker/PASTEFY_ID</p></div>
+<div id="mainContent" style="display:none;">
+<div class="header"><img id="hAvatar" src="https://placehold.co/100x100/13131a/555?text=..."><div><div class="name" id="hName">—</div><div class="meta" id="hMeta">—</div><div class="meta" id="hCount">—</div></div></div>
+<div id="grid" class="grid"></div>
+</div>
+</div>
+<script>
+function getPasteId(){const p=new URLSearchParams(location.search);if(p.get('id'))return p.get('id');if(p.get('Id'))return p.get('Id');const s=location.pathname.split('/').filter(Boolean);const l=s[s.length-1];if(!l||['sticker','s','SG'].includes(l))return null;return l;}
+function parseIds(t){return t.match(/\d{6,}/g)||[];}
+async function tryFetch(u){const a=[u,`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`];for(const x of a){try{const r=await fetch(x);if(r.ok){const t=await r.text();if(t)return t;}}catch(_){}}return null;}
+function copyText(t,btn){const f=()=>{const ta=Object.assign(document.createElement('textarea'),{value:t,style:'position:fixed;opacity:0'});document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);};(navigator.clipboard?navigator.clipboard.writeText(t).catch(f):Promise.resolve(f())).then(()=>{if(!btn)return;const o=btn.textContent;btn.textContent='Copied';setTimeout(()=>btn.textContent=o,1200);});}
+async function loadGallery(){
+  const id=getPasteId();if(!id)return;
+  const text=await tryFetch(`https://pastefy.app/${id}/raw`);
+  if(!text){document.getElementById('emptyState').innerHTML='<div class="empty"><p>Could not load pastefy</p></div>';return;}
+  document.getElementById('emptyState').style.display='none';
+  document.getElementById('mainContent').style.display='block';
+  let player='Sticker Pack';const m=text.match(/^Stickers from:\s*(.+)$/m);if(m)player=m[1].trim();
+  let date=null;try{const j=JSON.parse(text);if(j.player)player=j.player;if(j.date)date=j.date;}catch{}
+  document.getElementById('hName').textContent=player;
+  document.getElementById('hMeta').textContent=date?new Date(date).toLocaleString():'';
+  const ids=parseIds(text);
+  document.getElementById('hCount').textContent=ids.length+' stickers';
+  const grid=document.getElementById('grid');
+  if(!ids.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;color:#444;padding:24px;">No stickers</div>';return;}
+  grid.innerHTML=ids.map(id=>`<div class="box"><div class="box-img"><img id="img-${id}" src="https://placehold.co/300x300/0e0e16/444?text=..." alt="${id}"></div><div class="box-foot"><div class="box-id">${id}</div><button class="copy" onclick="copyText('${id}',this)">Copy</button></div></div>`).join('');
+  for(let i=0;i<ids.length;i+=100){
+    const chunk=ids.slice(i,i+100);
+    fetch(`https://thumbnails.roproxy.com/v1/assets?assetIds=${chunk.join(',')}&returnPolicy=PlaceHolder&size=420x420&format=Png`).then(r=>r.json()).then(d=>{if(d&&d.data){d.data.forEach(it=>{const el=document.getElementById('img-'+it.targetId);if(el)el.src=it.state==='Completed'?it.imageUrl:'https://placehold.co/300x300/0e0e16/ff3333?text=N/A';});}}).catch(()=>{});
+  }
+}
+loadGallery();
+</script>
+</body>
+</html>
