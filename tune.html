@@ -20,99 +20,125 @@
   };
 })();
 </script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
+<script>
+(function(){if(window.__pt)return;window.__pt=1;var o=EventTarget.prototype.addEventListener;var b={touchstart:1,touchmove:1,wheel:1};EventTarget.prototype.addEventListener=function(t,l,op){if(b[t]){if(op==null)op={passive:true};else if(typeof op==='boolean')op={capture:op,passive:true};else op=Object.assign({},op,{passive:true});}return o.call(this,t,l,op);};})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nexxto Tune</title>
+<link rel="icon" href="/logo.png">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Inter',sans-serif;background:#07070b;color:#e8e8f0;min-height:100vh;padding-bottom:60px;}
-.bg{position:fixed;inset:0;z-index:-1;background:radial-gradient(700px at 50% -10%,#1c1c4a 0%,transparent 60%),#07070b;}
-.top{max-width:640px;margin:0 auto;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;}
-.top a{color:#555;text-decoration:none;font-size:0.85rem;}
-.wrap{max-width:520px;margin:0 auto;padding:10px 16px 40px;}
-.card{background:rgba(19,19,26,0.85);border:1px solid #23233a;border-radius:24px;padding:28px;backdrop-filter:blur(16px);box-shadow:0 10px 40px rgba(0,0,0,0.4);}
-.avatar-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;margin-bottom:8px;}
-.avatar{width:96px;height:96px;border-radius:50%;border:3px solid #2a2a4a;object-fit:cover;background:#1a1a2a;box-shadow:0 0 0 6px rgba(91,110,245,0.08);}
-.info{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;}
-.info .display{font-size:1.35rem;font-weight:800;letter-spacing:-0.02em;}
-.info .username{font-size:0.85rem;color:#666;}
-.info .jeep{margin-top:6px;background:#1a1a3a;border:1px solid #2a2a4a;border-radius:999px;padding:6px 12px;font-size:0.75rem;color:#8b9bff;font-weight:600;}
-.info .time{font-size:0.72rem;color:#444;margin-top:6px;}
-.toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:20px 0 14px;background:#0e0e16;border-radius:14px;padding:6px;border:1px solid #1e1e32;}
-.toggle button{background:transparent;border:none;color:#666;padding:10px;border-radius:10px;font-weight:700;font-size:0.85rem;cursor:pointer;transition:all 0.2s;font-family:inherit;}
-.toggle button.active{background:#5b6ef5;color:#fff;box-shadow:0 4px 16px rgba(91,110,245,0.3);}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-.stat{background:#0e0e16;border:1px solid #1e1e32;border-radius:16px;padding:14px 10px;text-align:center;transition:transform 0.15s;}
-.stat:hover{transform:translateY(-1px);border-color:#2a2a4a;}
-.stat .val{font-size:1.05rem;font-weight:800;}
-.stat .key{font-size:0.65rem;color:#555;margin-top:4px;text-transform:uppercase;letter-spacing:0.06em;}
-.divider{border:none;border-top:1px solid #1e1e32;margin:18px 0;}
-.copy-btn{width:100%;background:#fff;color:#07070b;border:none;border-radius:14px;padding:14px;font-size:0.9rem;font-weight:800;cursor:pointer;font-family:inherit;transition:transform 0.1s;}
-.copy-btn:active{transform:scale(0.98);}
-.empty{padding:70px 20px;text-align:center;color:#444;}
-.empty p{font-size:0.9rem;}
-#mainContent{display:none;}
-#emptyState{display:block;}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:#1a1a2a;border:1px solid #2a2a4a;color:#fff;padding:12px 20px;border-radius:12px;font-size:0.85rem;transition:transform 0.3s;z-index:99;}
-.toast.show{transform:translateX(-50%) translateY(0);}
+:root{--bg:#0c0c0d;--surface:#111113;--surface-2:#161618;--border:#1f1f22;--border-soft:#19191c;--text:#e8e8ea;--dim:#5a5a62;--muted:#2e2e34;--accent:#888;--mono:'DM Mono',monospace;--display:'Syne',sans-serif}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:100vh;-webkit-font-smoothing:antialiased}
+header{position:sticky;top:0;z-index:100;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 32px;height:60px;border-bottom:1px solid var(--border);background:rgba(12,12,13,0.88);backdrop-filter:blur(16px)}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
+.logo-names{display:flex;flex-direction:column;gap:1px}
+.logo-title{font-family:var(--display);font-size:15px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase}
+.logo-sub{font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:0.18em;text-transform:uppercase}
+.header-count{font-size:11px;color:var(--dim);letter-spacing:0.08em;display:flex;align-items:center;gap:7px}
+.header-count-dot{width:5px;height:5px;background:var(--accent);border-radius:50%;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
+main{padding:40px 32px 80px;max-width:1080px;margin:0 auto}
+.card{background:var(--bg);border:1px solid var(--border-soft);display:flex;flex-direction:column}
+.card-pad{padding:28px}
+.avatar-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:24px;text-align:center}
+.avatar{width:clamp(72px,12vw,96px);height:clamp(72px,12vw,96px);border-radius:50%;border:1px solid var(--border);object-fit:cover;background:var(--surface)}
+.display{font-family:var(--display);font-weight:700;font-size:clamp(16px,2.5vw,20px)}
+.username{font-size:11px;color:var(--dim)}
+.jeep{font-size:10px;background:var(--surface-2);border:1px solid var(--border-soft);padding:6px 12px;border-radius:999px;margin-top:4px}
+.time{font-size:9px;color:var(--dim);margin-top:6px;text-transform:uppercase;letter-spacing:0.08em}
+.toggle{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border-soft);border:1px solid var(--border-soft);margin:24px 0}
+.toggle button{background:var(--bg);border:none;color:var(--dim);padding:12px;font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.15s}
+.toggle button.active{background:var(--text);color:var(--bg);font-weight:600}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--border-soft);border:1px solid var(--border-soft)}
+.stat{background:var(--bg);padding:18px 12px;text-align:center}
+.stat .val{font-family:var(--display);font-size:clamp(14px,2vw,18px);font-weight:700}
+.stat .key{font-size:8px;color:var(--dim);margin-top:6px;text-transform:uppercase;letter-spacing:0.12em}
+.bar{margin-bottom:28px;padding-bottom:24px;border-bottom:1px solid var(--border-soft);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:none;border:1px solid var(--border);color:var(--dim);padding:10px 18px;font-size:11px;font-family:var(--mono);cursor:pointer;letter-spacing:0.08em;transition:all 0.15s;text-transform:uppercase}
+.btn:hover{border-color:#3a3a3e;color:var(--text);background:var(--surface)}
+.btn-primary{background:var(--text);border-color:var(--text);color:var(--bg);font-weight:600;width:100%;padding:14px}
+.btn-primary:hover{background:#fff;border-color:#fff}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:50vh;gap:16px;text-align:center}
+.spinner{width:32px;height:32px;border:1.5px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--surface);border:1px solid var(--border);padding:10px 18px;font-size:11px;transition:transform 0.25s;z-index:99}
+.toast.show{transform:translateX(-50%) translateY(0)}
+#mainContent{display:none}
+@media(max-width:600px){header{padding:0 20px}main{padding:28px 20px 60px}}
 </style>
 </head>
 <body>
-<div class="bg"></div>
-<div class="top"><a href="/">Nexxtohub</a><span style="font-size:0.7rem;color:#333;letter-spacing:0.1em;text-transform:uppercase;">Tune</span></div>
-<div class="wrap">
-<div id="emptyState" class="card"><div class="empty"><p>No tune loaded. Use /tune/PASTEFY_ID</p></div></div>
-<div id="mainContent" class="card">
+<header>
+<a class="logo" href="/"><div class="logo-names"><span class="logo-title">Nexxto</span><span class="logo-sub">Tune Gallery</span></div></a>
+<div></div>
+<div style="display:flex;justify-content:flex-end"><div class="header-count" id="hcount" style="display:none"><div class="header-count-dot"></div><span id="hcount-text">Tune Loaded</span></div></div>
+</header>
+<main>
+<div id="emptyState" class="empty-state">
+<div class="spinner" id="loadSpinner"></div>
+<div id="emptyText">No tune loaded. Use /tune/PASTEFY_ID</div>
+</div>
+<div id="mainContent">
+<div class="bar">
+<a class="btn" href="/" >Home</a>
+<a class="btn" id="raw-link" target="_blank">Raw</a>
+</div>
+<div class="card">
+<div class="card-pad">
 <div class="avatar-wrap">
-<img id="avatar" class="avatar" src="https://placehold.co/200x200/13131a/555?text=...">
-<div class="info">
+<img id="avatar" class="avatar" src="https://placehold.co/96x96/111/444?text=N">
 <div class="display" id="displayName">—</div>
 <div class="username" id="username">—</div>
 <div class="jeep" id="jeep">—</div>
 <div class="time" id="time">—</div>
 </div>
-</div>
-<div class="toggle"><button id="btnFront" class="active" onclick="showFront()">Front Tune</button><button id="btnRear" onclick="showRear()">Rear Tune</button></div>
-<div id="frontStats" class="stats"><div class="stat"><div class="val" id="fh">—</div><div class="key">Height</div></div><div class="stat"><div class="val" id="fs">—</div><div class="key">Stiffness</div></div><div class="stat"><div class="val" id="fd">—</div><div class="key">Dampening</div></div></div>
-<div id="rearStats" class="stats" style="display:none;"><div class="stat"><div class="val" id="rh">—</div><div class="key">Height</div></div><div class="stat"><div class="val" id="rs">—</div><div class="key">Stiffness</div></div><div class="stat"><div class="val" id="rd">—</div><div class="key">Dampening</div></div></div>
-<hr class="divider">
-<button class="copy-btn" onclick="copyCode()">Get Tune Code</button>
+<div class="toggle"><button id="bFront" class="active">Front</button><button id="bRear">Rear</button></div>
+<div id="front" class="stats"><div class="stat"><div class="val" id="fh">—</div><div class="key">Height</div></div><div class="stat"><div class="val" id="fs">—</div><div class="key">Stiffness</div></div><div class="stat"><div class="val" id="fd">—</div><div class="key">Dampening</div></div></div>
+<div id="rear" class="stats" style="display:none"><div class="stat"><div class="val" id="rh">—</div><div class="key">Height</div></div><div class="stat"><div class="val" id="rs">—</div><div class="key">Stiffness</div></div><div class="stat"><div class="val" id="rd">—</div><div class="key">Dampening</div></div></div>
+<button class="btn btn-primary" id="copyBtn" style="margin-top:24px">Get Tune Code</button>
 </div>
 </div>
+</div>
+</main>
 <div id="toast" class="toast"></div>
 <script>
-function getPasteId(){const p=new URLSearchParams(location.search);if(p.get('id'))return p.get('id');const s=location.pathname.split('/').filter(Boolean);const l=s[s.length-1];if(!l||['tune','t'].includes(l))return null;return l;}
-async function tryFetch(u){const a=[u,`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`];for(const x of a){try{const r=await fetch(x);if(r.ok){const t=await r.text();if(t)return t;}}catch(_){}}return null;}
-function showFront(){document.getElementById('frontStats').style.display='grid';document.getElementById('rearStats').style.display='none';document.getElementById('btnFront').classList.add('active');document.getElementById('btnRear').classList.remove('active');}
-function showRear(){document.getElementById('frontStats').style.display='none';document.getElementById('rearStats').style.display='grid';document.getElementById('btnRear').classList.add('active');document.getElementById('btnFront').classList.remove('active');}
-function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);}
-async function loadTune(){
-  const id=getPasteId();if(!id)return;
-  const text=await tryFetch(`https://pastefy.app/${id}/raw`);
-  if(!text){document.getElementById('emptyState').innerHTML='<div class="empty"><p>Could not load pastefy</p></div>';return;}
-  let d=null;
-  try{d=JSON.parse(text);}catch{try{const m=text.match(/\{[\s\S]*\}/);if(m)d=JSON.parse(m[0]);}catch{}if(!d){const fh=(text.match(/fh;([\d.]+)/)||[])[1];if(fh)d={fh,rh:(text.match(/rh;([\d.]+)/)||[])[1],fs:(text.match(/fs;([\d.]+)/)||[])[1],rs:(text.match(/rs;([\d.]+)/)||[])[1],fd:(text.match(/fd;([\d.]+)/)||[])[1],rd:(text.match(/rd;([\d.]+)/)||[])[1],tuneCode:text};}}
-  if(!d)return;
-  document.getElementById('emptyState').style.display='none';
-  document.getElementById('mainContent').style.display='block';
-  const uid=d.userId||d.targetId;
-  if(uid)fetch(`https://thumbnails.roproxy.com/v1/users/avatar-headshot?userIds=${uid}&size=420x420&format=Png&isCircular=false`).then(r=>r.json()).then(j=>{if(j.data&&j.data[0])document.getElementById('avatar').src=j.data[0].imageUrl;});
-  document.getElementById('displayName').textContent=d.displayName||d.target||'Unknown Player';
-  document.getElementById('username').textContent='@'+(d.target||d.username||'unknown');
-  document.getElementById('jeep').textContent=d.jeepName||d.jeep||'Unknown Jeep';
-  document.getElementById('time').textContent=d.date?new Date(d.date).toLocaleString():'';
-  const fmt=v=>v!=null?parseFloat(v).toFixed(4):'—';
-  document.getElementById('fh').textContent=fmt(d.fh??d.frontHeight);
-  document.getElementById('fs').textContent=fmt(d.fs??d.frontStiffness);
-  document.getElementById('fd').textContent=fmt(d.fd??d.frontDampening);
-  document.getElementById('rh').textContent=fmt(d.rh??d.rearHeight);
-  document.getElementById('rs').textContent=fmt(d.rs??d.rearStiffness);
-  document.getElementById('rd').textContent=fmt(d.rd??d.rearDampening);
-  window.__code=d.tuneCode||`fh;${fmt(d.fh)};rh;${fmt(d.rh)};fs;${fmt(d.fs)};rs;${fmt(d.rs)};fd;${fmt(d.fd)};rd;${fmt(d.rd)}`;
+function getId(){let s=location.pathname.split('/').filter(Boolean);let l=s[s.length-1];if(!l||['tune','tune.html','t'].includes(l)){return new URLSearchParams(location.search).get('id');}return l;}
+async function fetchRaw(id){let urls=[`https://pastefy.app/${id}/raw`,`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://pastefy.app/${id}/raw`)}`];for(let u of urls){try{let r=await fetch(u);if(r.ok){let t=await r.text();if(t)return t;}}catch(e){}}return null;}
+function showF(){document.getElementById('front').style.display='grid';document.getElementById('rear').style.display='none';document.getElementById('bFront').classList.add('active');document.getElementById('bRear').classList.remove('active');}
+function showR(){document.getElementById('front').style.display='none';document.getElementById('rear').style.display='grid';document.getElementById('bRear').classList.add('active');document.getElementById('bFront').classList.remove('active');}
+document.getElementById('bFront').onclick=showF;
+document.getElementById('bRear').onclick=showR;
+async function load(){
+let id=getId();if(!id)return;
+document.getElementById('loadSpinner').style.display='block';
+let txt=await fetchRaw(id);if(!txt){document.getElementById('emptyText').textContent='Could not load paste';document.getElementById('loadSpinner').style.display='none';return;}
+let d=null;try{d=JSON.parse(txt);}catch{try{let m=txt.match(/\{[\s\S]*\}/);if(m)d=JSON.parse(m[0]);}catch{}if(!d){let fh=(txt.match(/fh;([\d.]+)/)||[])[1];if(fh)d={fh,rh:(txt.match(/rh;([\d.]+)/)||[])[1],fs:(txt.match(/fs;([\d.]+)/)||[])[1],rs:(txt.match(/rs;([\d.]+)/)||[])[1],fd:(txt.match(/fd;([\d.]+)/)||[])[1],rd:(txt.match(/rd;([\d.]+)/)||[])[1],tuneCode:txt};}}
+if(!d){document.getElementById('emptyText').textContent='Invalid tune format';document.getElementById('loadSpinner').style.display='none';return;}
+document.getElementById('emptyState').style.display='none';
+document.getElementById('mainContent').style.display='block';
+document.getElementById('hcount').style.display='flex';
+document.getElementById('raw-link').href=`https://pastefy.app/${id}/raw`;
+let uid=d.userId||d.targetId;
+if(uid){fetch(`https://thumbnails.roproxy.com/v1/users/avatar-headshot?userIds=${uid}&size=420x420&format=Png&isCircular=false`).then(r=>r.json()).then(j=>{if(j.data&&j.data[0])document.getElementById('avatar').src=j.data[0].imageUrl;});}
+document.getElementById('displayName').textContent=d.displayName||d.target||'Unknown';
+document.getElementById('username').textContent='@'+(d.target||'unknown');
+document.getElementById('jeep').textContent=d.jeepName||d.jeep||'Unknown Jeep';
+document.getElementById('time').textContent=d.date?new Date(d.date).toLocaleString():'';
+let fmt=v=>v!=null?parseFloat(v).toFixed(4):'—';
+document.getElementById('fh').textContent=fmt(d.fh??d.frontHeight);
+document.getElementById('fs').textContent=fmt(d.fs??d.frontStiffness);
+document.getElementById('fd').textContent=fmt(d.fd??d.frontDampening);
+document.getElementById('rh').textContent=fmt(d.rh??d.rearHeight);
+document.getElementById('rs').textContent=fmt(d.rs??d.rearStiffness);
+document.getElementById('rd').textContent=fmt(d.rd??d.rearDampening);
+window._code=d.tuneCode||txt;
 }
-function copyCode(){if(!window.__code)return;navigator.clipboard.writeText(window.__code).then(()=>toast('Tune code copied'));}
-loadTune();
+function copyCode(){if(!window._code)return;navigator.clipboard.writeText(window._code).then(()=>{let t=document.getElementById('toast');t.textContent='Copied tune code';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);});}
+document.getElementById('copyBtn').onclick=copyCode;
+load();
 </script>
 </body>
 </html>
