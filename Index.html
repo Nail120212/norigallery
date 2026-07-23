@@ -22,77 +22,62 @@
 </script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nexxtohub</title>
+<title>Nexxto Hub</title>
+<link rel="icon" href="/logo.png">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Inter',sans-serif;background:#07070b;color:#e8e8f0;min-height:100vh;overflow-x:hidden;}
-.bg{position:fixed;inset:0;z-index:-1;background:radial-gradient(600px at 20% 10%,#1a1a3a 0%,transparent 60%),radial-gradient(800px at 80% 90%,#1e1e4a 0%,transparent 60%),#07070b;}
-.top{padding:20px 24px;display:flex;justify-content:space-between;align-items:center;max-width:1100px;margin:0 auto;width:100%;}
-.top a{color:#666;text-decoration:none;font-size:0.85rem;}
-.hero{max-width:1100px;margin:0 auto;padding:40px 24px 20px;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;}
-.hero h1{font-size:clamp(2rem,6vw,3.2rem);font-weight:900;letter-spacing:-0.04em;line-height:0.9;}
-.hero p{color:#666;font-size:0.95rem;max-width:400px;}
-.search{max-width:560px;width:100%;margin:12px auto 0;background:rgba(19,19,26,0.8);border:1px solid #22223a;border-radius:16px;padding:6px;display:flex;gap:6px;backdrop-filter:blur(12px);transition:border-color 0.2s;}
-.search:focus-within{border-color:#5b6ef5;}
-.search input{flex:1;background:transparent;border:none;outline:none;color:#fff;padding:14px 16px;font-family:inherit;font-size:0.95rem;}
-.search button{background:#5b6ef5;color:#fff;border:none;border-radius:12px;padding:12px 20px;font-weight:700;cursor:pointer;font-family:inherit;transition:transform 0.1s;}
-.search button:active{transform:scale(0.97);}
-.cards{max-width:900px;width:100%;margin:32px auto;padding:0 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;}
-.card{background:rgba(19,19,26,0.7);border:1px solid #22223a;border-radius:20px;padding:28px;text-decoration:none;color:#fff;transition:all 0.2s;backdrop-filter:blur(8px);}
-.card:hover{border-color:#5b6ef5;transform:translateY(-2px);background:rgba(24,24,36,0.9);}
-.card .label{font-weight:700;font-size:1.1rem;}
-.card .desc{font-size:0.8rem;color:#666;margin-top:6px;line-height:1.4;}
-.status{margin-top:10px;font-size:0.8rem;color:#555;}
+:root{--bg:#0c0c0d;--surface:#111113;--surface-2:#161618;--border:#1f1f22;--border-soft:#19191c;--text:#e8e8ea;--dim:#5a5a62;--mono:'DM Mono',monospace;--display:'Syne',sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:100vh;-webkit-font-smoothing:antialiased}
+header{height:60px;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 32px;justify-content:space-between;position:sticky;top:0;background:rgba(12,12,13,0.88);backdrop-filter:blur(16px);z-index:10}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
+.logo-title{font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:0.1em;text-transform:uppercase}
+.logo-sub{font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:0.18em;text-transform:uppercase;margin-top:2px}
+.logo-names{display:flex;flex-direction:column;gap:1px}
+main{max-width:1080px;margin:0 auto;padding:60px 32px 80px}
+.hero{margin-bottom:48px}
+.hero h1{font-family:var(--display);font-size:clamp(32px,6vw,56px);font-weight:800;line-height:0.95;letter-spacing:-0.02em;margin-bottom:16px}
+.hero p{font-size:12px;color:var(--dim);max-width:400px;line-height:1.6}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1px;background:var(--border-soft);border:1px solid var(--border-soft)}
+.card{background:var(--bg);padding:28px;display:flex;flex-direction:column;gap:18px;transition:background 0.15s;text-decoration:none;color:inherit}
+.card:hover{background:var(--surface)}
+.card-top{display:flex;justify-content:space-between;align-items:center}
+.card-label{font-size:9px;color:var(--dim);letter-spacing:0.15em;text-transform:uppercase}
+.card-dot{width:5px;height:5px;background:var(--text);border-radius:50%}
+.card-title{font-family:var(--display);font-size:18px;font-weight:700}
+.card-desc{font-size:11px;color:var(--dim);line-height:1.6}
+.card-foot{margin-top:auto;padding-top:18px;border-top:1px solid var(--border-soft);display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase}
+@media(max-width:600px){header{padding:0 20px}main{padding:32px 20px 60px}}
 </style>
 </head>
 <body>
-<div class="bg"></div>
-<div class="top"><a href="/">Nexxtohub</a></div>
+<header>
+<a class="logo" href="/">
+<div class="logo-names">
+<span class="logo-title">Nexxto</span>
+<span class="logo-sub">Hub • nexgallery-ten.vercel.app</span>
+</div>
+</a>
+</header>
+<main>
 <div class="hero">
-<h1>Nexxtohub</h1>
-<p>Paste your Pastefy ID and it will auto detect if its tune or sticker gallery</p>
-<div class="search"><input id="paste" placeholder="Pastefy ID or https://pastefy.app/..."><button onclick="loadId()">Open</button></div>
-<div id="hint" class="status">Try /tune/ID or /sticker/ID</div>
+<h1>STICKER &<br>TUNE VAULT</h1>
+<p>All stolen stickers and tunes in one place. Pastefy powered, auto-scaled, gallery ready.</p>
 </div>
-<div class="cards">
-<a class="card" href="/tune"><div class="label">Tune Viewer</div><div class="desc">View jeep tune with avatar, username, jeep and front rear toggle</div></a>
-<a class="card" href="/sticker"><div class="label">Sticker Gallery</div><div class="desc">View sticker boxes with image, copy button and rounded corners</div></a>
+<div class="grid">
+<a class="card" href="/sticker.html">
+<div class="card-top"><span class="card-label">Gallery / 01</span><span class="card-dot"></span></div>
+<div class="card-title">Sticker Gallery</div>
+<div class="card-desc">View, copy and preview all stolen decal IDs. Auto thumbnail from Roblox.</div>
+<div class="card-foot"><span>Open</span><span>→</span></div>
+</a>
+<a class="card" href="/tune.html">
+<div class="card-top"><span class="card-label">Gallery / 02</span><span class="card-dot"></span></div>
+<div class="card-title">Tune Gallery</div>
+<div class="card-desc">Front / rear height, stiffness, dampening. Avatar, jeep name and code copy.</div>
+<div class="card-foot"><span>Open</span><span>→</span></div>
+</a>
 </div>
-<script>
-function extractId(v){
-  if(!v) return null;
-  let id=v.trim();
-  const m=id.match(/pastefy\.app\/([^\/\?\s]+)/);
-  if(m) id=m[1];
-  id=id.replace(/[^a-zA-Z0-9]/g,'');
-  return id||null;
-}
-async function tryFetchRaw(id){
-  const urls=[`https://pastefy.app/${id}/raw`,`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://pastefy.app/${id}/raw`)}`];
-  for(const u of urls){
-    try{const r=await fetch(u);if(r.ok){const t=await r.text();if(t)return t;}}catch(_){}
-  }
-  return null;
-}
-async function loadId(){
-  const raw=document.getElementById('paste').value;
-  const id=extractId(raw);
-  if(!id){document.getElementById('hint').textContent='Invalid ID';return;}
-  document.getElementById('hint').textContent='Detecting...';
-  const text=await tryFetchRaw(id);
-  if(!text){location.href=`/sticker/${id}`;return;}
-  let isTune=false;
-  try{const j=JSON.parse(text);if(j.fh!=null||j.frontHeight!=null||j.tuneCode) isTune=true;}catch{ if(text.includes('fh;')||text.includes('tuneCode')) isTune=true; }
-  if(isTune) location.href=`/tune/${id}`;
-  else location.href=`/sticker/${id}`;
-}
-document.getElementById('paste').addEventListener('keydown',e=>{if(e.key==='Enter')loadId();});
-// auto load if ?id= present
-(function(){
-  const p=new URLSearchParams(location.search).get('id');
-  if(p){document.getElementById('paste').value=p;loadId();}
-})();
-</script>
+</main>
 </body>
 </html>
