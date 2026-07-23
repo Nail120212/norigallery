@@ -1,550 +1,98 @@
-const express = require('express');
-const app = express();
-
-app.use(express.json({ limit: '10mb' }));
-
-const PASTEFY_RAW = (id) => `https://pastefy.app/${id}/raw`;
-const PROXY = (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-
-app.get('/', (req, res) => res.send(getIndexPage()));
-app.get('/favicon.ico', (req, res) => res.redirect('https://nexxtohubontop.vercel.app/logo.png'));
-
-app.get('/tune', (req, res) => res.send(getTunePage()));
-app.get('/tune/:pasteId', (req, res) => res.send(getTunePage()));
-app.get('/t', (req, res) => res.send(getTunePage()));
-app.get('/t/:pasteId', (req, res) => res.send(getTunePage()));
-
-app.get('/SG', (req, res) => res.send(getStickerPage()));
-app.get('/SG/:pasteId', (req, res) => res.send(getStickerPage()));
-app.get('/s', (req, res) => res.send(getStickerPage()));
-app.get('/s/:pasteId', (req, res) => res.send(getStickerPage()));
-app.get('/sticker', (req, res) => res.send(getStickerPage()));
-app.get('/sticker/:pasteId', (req, res) => res.send(getStickerPage()));
-
-app.get('*', (req, res) => {
-    const p = req.path;
-    if (p.startsWith('/t')) return res.send(getTunePage());
-    if (p.startsWith('/s') || p.startsWith('/SG')) return res.send(getStickerPage());
-    res.send(getIndexPage());
-});
-
-function getIndexPage() {
-    return `<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NexxToHubOnTop</title>
-<link rel="icon" type="image/png" href="/logo.png">
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Inter', sans-serif;
-    background: #0a0a0f;
-    color: #e8e8f0;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 24px;
-    padding: 24px;
-  }
-  img.logo { width: 80px; height: 80px; border-radius: 16px; object-fit: cover; }
-  h1 { font-size: 2rem; font-weight: 900; letter-spacing: -0.03em; color: #fff; }
-  p { color: #888; font-size: 0.95rem; }
-  .cards { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
-  .card {
-    background: #13131a;
-    border: 1px solid #2a2a3a;
-    border-radius: 14px;
-    padding: 24px 32px;
-    text-align: center;
-    text-decoration: none;
-    color: #e8e8f0;
-    transition: border-color 0.2s, transform 0.15s;
-    min-width: 160px;
-  }
-  .card:hover { border-color: #5b6ef5; transform: translateY(-2px); }
-  .card .icon { font-size: 2rem; margin-bottom: 8px; }
-  .card .label { font-weight: 600; font-size: 0.9rem; color: #aaa; }
-</style>
-</head>
-<body>
-  <img class="logo" src="/logo.png" alt="Logo" onerror="this.style.display='none'">
-  <h1>NexxToHubOnTop</h1>
-  <p>Roblox tune & sticker sharing</p>
-  <div class="cards">
-    <a class="card" href="/tune">
-      <div class="icon">🔧</div>
-      <div class="label">Tune Viewer</div>
-    </a>
-    <a class="card" href="/s">
-      <div class="icon">🎨</div>
-      <div class="label">Sticker Gallery</div>
-    </a>
-  </div>
-</body>
-</html>`;
-}
-
-function getTunePage() {
-    return `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tune Viewer — NexxToHubOnTop</title>
-<link rel="icon" type="image/png" href="/logo.png">
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Inter', sans-serif;
-    background: #0a0a0f;
-    color: #e8e8f0;
-    min-height: 100vh;
-    padding: 24px 16px 48px;
-  }
-  .topbar {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 32px;
-    max-width: 520px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .topbar img.site-logo { width: 32px; height: 32px; border-radius: 8px; object-fit: cover; }
-  .topbar a { color: #666; text-decoration: none; font-size: 0.85rem; }
-  .topbar a:hover { color: #aaa; }
-  .card {
-    background: #13131a;
-    border: 1px solid #2a2a3a;
-    border-radius: 18px;
-    padding: 28px;
-    max-width: 520px;
-    margin: 0 auto;
-  }
-  .profile { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
-  .avatar {
-    width: 72px; height: 72px;
-    border-radius: 50%;
-    border: 2px solid #2a2a3a;
-    object-fit: cover;
-    background: #1e1e28;
-  }
-  .profile-info .display { font-size: 1.2rem; font-weight: 700; }
-  .profile-info .username { font-size: 0.85rem; color: #666; margin-top: 2px; }
-  .profile-info .jeep { font-size: 0.8rem; color: #5b6ef5; margin-top: 4px; font-weight: 600; letter-spacing: 0.02em; }
-  .meta { font-size: 0.78rem; color: #555; margin-bottom: 20px; }
-  .section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-    cursor: pointer;
-    user-select: none;
-  }
-  .section-header .title {
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #555;
-  }
-  .section-header .chevron { color: #444; font-size: 0.8rem; transition: transform 0.2s; }
-  .section-header.open .chevron { transform: rotate(180deg); }
-  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
-  .stat { background: #0e0e16; border: 1px solid #1e1e2e; border-radius: 10px; padding: 12px 10px; text-align: center; }
-  .stat .val { font-size: 1rem; font-weight: 700; color: #fff; font-variant-numeric: tabular-nums; }
-  .stat .key { font-size: 0.68rem; color: #555; margin-top: 3px; text-transform: uppercase; letter-spacing: 0.05em; }
-  .divider { border: none; border-top: 1px solid #1e1e2e; margin: 16px 0; }
-  .copy-btn {
-    width: 100%;
-    background: #5b6ef5;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    padding: 13px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: inherit;
-    transition: background 0.15s, transform 0.1s;
-    margin-top: 4px;
-  }
-  .copy-btn:hover { background: #4a5de0; }
-  .copy-btn:active { transform: scale(0.98); }
-  .hidden { display: none; }
-  .empty { text-align: center; padding: 60px 20px; color: #444; }
-  .empty .icon { font-size: 2.5rem; margin-bottom: 12px; }
-  .empty p { font-size: 0.9rem; }
-  #mainContent { display: none; }
-  #emptyState { display: block; }
-  .toast {
-    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
-    background: #1e1e28; border: 1px solid #2a2a3a; color: #e8e8f0;
-    padding: 10px 20px; border-radius: 8px; font-size: 0.85rem;
-    transition: transform 0.3s; z-index: 999;
-  }
-  .toast.show { transform: translateX(-50%) translateY(0); }
-</style>
-</head>
-<body>
-<div class="topbar">
-  <img class="site-logo" src="/logo.png" alt="Logo" onerror="this.style.display='none'">
-  <a href="/">NexxToHubOnTop</a>
-</div>
-
-<div id="emptyState" class="card">
-  <div class="empty">
-    <div class="icon">🔧</div>
-    <p>No tune loaded. Use a valid tune link.</p>
-  </div>
-</div>
-
-<div id="mainContent" class="card">
-  <div class="profile">
-    <img id="avatar" class="avatar" src="" alt="Avatar">
-    <div class="profile-info">
-      <div class="display" id="displayName">—</div>
-      <div class="username" id="username">—</div>
-      <div class="jeep" id="jeep">—</div>
-    </div>
-  </div>
-  <div class="meta" id="time">—</div>
-
-  <div class="section-header open" onclick="toggleSection('front', this)">
-    <span class="title">Front Suspension</span>
-    <span class="chevron">▾</span>
-  </div>
-  <div id="frontPanel" class="stats-grid">
-    <div class="stat"><div class="val" id="fh">—</div><div class="key">Height</div></div>
-    <div class="stat"><div class="val" id="fs">—</div><div class="key">Stiffness</div></div>
-    <div class="stat"><div class="val" id="fd">—</div><div class="key">Dampening</div></div>
-  </div>
-
-  <hr class="divider">
-
-  <div class="section-header open" onclick="toggleSection('rear', this)">
-    <span class="title">Rear Suspension</span>
-    <span class="chevron">▾</span>
-  </div>
-  <div id="rearPanel" class="stats-grid">
-    <div class="stat"><div class="val" id="rh">—</div><div class="key">Height</div></div>
-    <div class="stat"><div class="val" id="rs">—</div><div class="key">Stiffness</div></div>
-    <div class="stat"><div class="val" id="rd">—</div><div class="key">Dampening</div></div>
-  </div>
-
-  <hr class="divider">
-  <button class="copy-btn" onclick="copyTuneCode()">Copy Tune Code</button>
-</div>
-
-<div class="toast" id="toast">Tune code copied!</div>
-
-<script>
-async function tryFetch(url) {
-  const attempts = [url, 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url)];
-  for (const u of attempts) {
-    try {
-      const r = await fetch(u);
-      if (r.ok) {
-        const t = await r.text();
-        if (t) return t;
-      }
-    } catch (_) {}
-  }
-  return null;
-}
-
-function getPasteId() {
-  const params = new URLSearchParams(window.location.search);
-  const segments = window.location.pathname.split('/').filter(Boolean);
-  const lastSegment = segments[segments.length - 1];
-  if (params.get('id')) return params.get('id');
-  if (lastSegment && lastSegment !== 'tune' && lastSegment !== 't') return lastSegment;
-  return null;
-}
-
-async function loadTune() {
-  const params = new URLSearchParams(window.location.search);
-  let data = null;
-
-  if (params.get('data')) {
-    try { data = JSON.parse(atob(params.get('data'))); } catch {}
-  } else if (window.location.hash) {
-    try { data = JSON.parse(atob(window.location.hash.slice(1))); } catch {}
-  } else {
-    const pasteId = getPasteId();
-    if (pasteId) {
-      const text = await tryFetch('https://pastefy.app/' + pasteId + '/raw');
-      if (text) {
-        try { data = JSON.parse(text); } catch {}
+<head><!-- PLAYABLE_TOUCH_PATCH_V1 --><script>
+(function() {
+  if (window.__playableTouchPatchInstalled) return;
+  window.__playableTouchPatchInstalled = true;
+  var origAdd = EventTarget.prototype.addEventListener;
+  var blockedTypes = { touchstart: 1, touchmove: 1, wheel: 1 };
+  EventTarget.prototype.addEventListener = function(type, listener, options) {
+    if (blockedTypes[type]) {
+      if (options === undefined || options === null) {
+        options = { passive: true };
+      } else if (typeof options === 'boolean') {
+        options = { capture: options, passive: true };
+      } else {
+        options = Object.assign({}, options, { passive: true });
       }
     }
-  }
-
-  if (!data || data.error) return;
-
-  document.getElementById('emptyState').style.display = 'none';
-  document.getElementById('mainContent').style.display = 'block';
-
-  const userId = data.userId || data.targetId;
-  let avatarUrl = '';
-  if (userId) {
-    try {
-      const thumb = await fetch('https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=' + userId + '&size=420x420&format=Png&isCircular=false').then(r => r.json());
-      avatarUrl = thumb?.data?.[0]?.imageUrl || '';
-    } catch {}
-  }
-  document.getElementById('avatar').src = avatarUrl;
-
-  document.getElementById('displayName').textContent = data.displayName || data.target || 'Unknown';
-  document.getElementById('username').textContent = '@' + (data.target || 'unknown');
-  document.getElementById('jeep').textContent = data.jeepName || data.jeep || '';
-  document.getElementById('time').textContent = data.date ? new Date(data.date).toLocaleString() : '';
-
-  const fmt = v => v != null ? parseFloat(v).toFixed(4) : '—';
-  document.getElementById('fh').textContent = fmt(data.fh ?? data.frontHeight);
-  document.getElementById('fs').textContent = fmt(data.fs ?? data.frontStiffness);
-  document.getElementById('fd').textContent = fmt(data.fd ?? data.frontDampening);
-  document.getElementById('rh').textContent = fmt(data.rh ?? data.rearHeight);
-  document.getElementById('rs').textContent = fmt(data.rs ?? data.rearStiffness);
-  document.getElementById('rd').textContent = fmt(data.rd ?? data.rearDampening);
-
-  window.__tuneCode = data.tuneCode;
-}
-
-function copyTuneCode() {
-  if (!window.__tuneCode) return;
-  navigator.clipboard.writeText(window.__tuneCode).then(() => showToast('Tune code copied!'));
-}
-
-function toggleSection(id, header) {
-  const panel = document.getElementById(id + 'Panel');
-  panel.classList.toggle('hidden');
-  header.classList.toggle('open');
-}
-
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
-}
-
-loadTune();
-</script>
-</body>
-</html>`;
-}
-
-function getStickerPage() {
-    return `<!DOCTYPE html>
-<html lang="en">
-<head>
+    return origAdd.call(this, type, listener, options);
+  };
+})();
+</script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sticker Gallery — NexxToHubOnTop</title>
-<link rel="icon" type="image/png" href="/logo.png">
+<title>Nexxtohub</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Inter', sans-serif;
-    background: #0a0a0f;
-    color: #e8e8f0;
-    min-height: 100vh;
-    padding: 24px 16px 48px;
-  }
-  .topbar {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 32px;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .topbar img.site-logo { width: 32px; height: 32px; border-radius: 8px; object-fit: cover; }
-  .topbar a { color: #666; text-decoration: none; font-size: 0.85rem; }
-  .topbar a:hover { color: #aaa; }
-  .card {
-    background: #13131a;
-    border: 1px solid #2a2a3a;
-    border-radius: 18px;
-    padding: 28px;
-    max-width: 600px;
-    margin: 0 auto;
-  }
-  .profile { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
-  .avatar {
-    width: 64px; height: 64px;
-    border-radius: 50%;
-    border: 2px solid #2a2a3a;
-    object-fit: cover;
-    background: #1e1e28;
-  }
-  .profile-info .display { font-size: 1.1rem; font-weight: 700; }
-  .profile-info .meta { font-size: 0.78rem; color: #555; margin-top: 4px; }
-  .section-label {
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #555;
-    margin-bottom: 14px;
-  }
-  .sticker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 12px; }
-  .sticker-item {
-    background: #0e0e16;
-    border: 1px solid #1e1e2e;
-    border-radius: 12px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 10px 8px 8px;
-    gap: 6px;
-    transition: border-color 0.15s;
-  }
-  .sticker-item:hover { border-color: #5b6ef5; }
-  .sticker-item img { width: 72px; height: 72px; object-fit: contain; border-radius: 8px; }
-  .sticker-item .sticker-name { font-size: 0.68rem; color: #666; text-align: center; word-break: break-word; line-height: 1.3; }
-  .sticker-item .sticker-count { font-size: 0.75rem; font-weight: 700; color: #5b6ef5; }
-  .empty { text-align: center; padding: 60px 20px; color: #444; }
-  .empty .icon { font-size: 2.5rem; margin-bottom: 12px; }
-  .empty p { font-size: 0.9rem; }
-  #mainContent { display: none; }
-  #emptyState { display: block; }
-  .no-stickers { color: #444; font-size: 0.85rem; text-align: center; padding: 24px 0; grid-column: 1 / -1; }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:#07070b;color:#e8e8f0;min-height:100vh;overflow-x:hidden;}
+.bg{position:fixed;inset:0;z-index:-1;background:radial-gradient(600px at 20% 10%,#1a1a3a 0%,transparent 60%),radial-gradient(800px at 80% 90%,#1e1e4a 0%,transparent 60%),#07070b;}
+.top{padding:20px 24px;display:flex;justify-content:space-between;align-items:center;max-width:1100px;margin:0 auto;width:100%;}
+.top a{color:#666;text-decoration:none;font-size:0.85rem;}
+.hero{max-width:1100px;margin:0 auto;padding:40px 24px 20px;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;}
+.hero h1{font-size:clamp(2rem,6vw,3.2rem);font-weight:900;letter-spacing:-0.04em;line-height:0.9;}
+.hero p{color:#666;font-size:0.95rem;max-width:400px;}
+.search{max-width:560px;width:100%;margin:12px auto 0;background:rgba(19,19,26,0.8);border:1px solid #22223a;border-radius:16px;padding:6px;display:flex;gap:6px;backdrop-filter:blur(12px);transition:border-color 0.2s;}
+.search:focus-within{border-color:#5b6ef5;}
+.search input{flex:1;background:transparent;border:none;outline:none;color:#fff;padding:14px 16px;font-family:inherit;font-size:0.95rem;}
+.search button{background:#5b6ef5;color:#fff;border:none;border-radius:12px;padding:12px 20px;font-weight:700;cursor:pointer;font-family:inherit;transition:transform 0.1s;}
+.search button:active{transform:scale(0.97);}
+.cards{max-width:900px;width:100%;margin:32px auto;padding:0 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;}
+.card{background:rgba(19,19,26,0.7);border:1px solid #22223a;border-radius:20px;padding:28px;text-decoration:none;color:#fff;transition:all 0.2s;backdrop-filter:blur(8px);}
+.card:hover{border-color:#5b6ef5;transform:translateY(-2px);background:rgba(24,24,36,0.9);}
+.card .label{font-weight:700;font-size:1.1rem;}
+.card .desc{font-size:0.8rem;color:#666;margin-top:6px;line-height:1.4;}
+.status{margin-top:10px;font-size:0.8rem;color:#555;}
 </style>
 </head>
 <body>
-<div class="topbar">
-  <img class="site-logo" src="/logo.png" alt="Logo" onerror="this.style.display='none'">
-  <a href="/">NexxToHubOnTop</a>
+<div class="bg"></div>
+<div class="top"><a href="/">Nexxtohub</a></div>
+<div class="hero">
+<h1>Nexxtohub</h1>
+<p>Paste your Pastefy ID and it will auto detect if its tune or sticker gallery</p>
+<div class="search"><input id="paste" placeholder="Pastefy ID or https://pastefy.app/..."><button onclick="loadId()">Open</button></div>
+<div id="hint" class="status">Try /tune/ID or /sticker/ID</div>
 </div>
-
-<div id="emptyState" class="card">
-  <div class="empty">
-    <div class="icon">🎨</div>
-    <p>No sticker gallery loaded. Use a valid gallery link.</p>
-  </div>
+<div class="cards">
+<a class="card" href="/tune"><div class="label">Tune Viewer</div><div class="desc">View jeep tune with avatar, username, jeep and front rear toggle</div></a>
+<a class="card" href="/sticker"><div class="label">Sticker Gallery</div><div class="desc">View sticker boxes with image, copy button and rounded corners</div></a>
 </div>
-
-<div id="mainContent" class="card">
-  <div class="profile">
-    <img id="avatar" class="avatar" src="" alt="Avatar">
-    <div class="profile-info">
-      <div class="display" id="playerName">—</div>
-      <div class="meta" id="galleryMeta">—</div>
-    </div>
-  </div>
-  <div class="section-label" id="stickerCountLabel">Stickers</div>
-  <div id="stickerGrid" class="sticker-grid"></div>
-</div>
-
 <script>
-function parseIds(t) {
-  return t.match(/\\d{6,}/g) || [];
+function extractId(v){
+  if(!v) return null;
+  let id=v.trim();
+  const m=id.match(/pastefy\.app\/([^\/\?\s]+)/);
+  if(m) id=m[1];
+  id=id.replace(/[^a-zA-Z0-9]/g,'');
+  return id||null;
 }
-
-async function tryFetch(url) {
-  const attempts = [url, 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url)];
-  for (const u of attempts) {
-    try {
-      const r = await fetch(u);
-      if (r.ok) {
-        const t = await r.text();
-        if (t) return t;
-      }
-    } catch (_) {}
+async function tryFetchRaw(id){
+  const urls=[`https://pastefy.app/${id}/raw`,`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://pastefy.app/${id}/raw`)}`];
+  for(const u of urls){
+    try{const r=await fetch(u);if(r.ok){const t=await r.text();if(t)return t;}}catch(_){}
   }
   return null;
 }
-
-function getPasteId() {
-  const params = new URLSearchParams(window.location.search);
-  const segments = window.location.pathname.split('/').filter(Boolean);
-  const lastSegment = segments[segments.length - 1];
-  if (params.get('id')) return params.get('id');
-  if (params.get('Id')) return params.get('Id');
-  if (lastSegment && !['s', 'SG', 'sticker'].includes(lastSegment)) return lastSegment;
-  return null;
+async function loadId(){
+  const raw=document.getElementById('paste').value;
+  const id=extractId(raw);
+  if(!id){document.getElementById('hint').textContent='Invalid ID';return;}
+  document.getElementById('hint').textContent='Detecting...';
+  const text=await tryFetchRaw(id);
+  if(!text){location.href=`/sticker/${id}`;return;}
+  let isTune=false;
+  try{const j=JSON.parse(text);if(j.fh!=null||j.frontHeight!=null||j.tuneCode) isTune=true;}catch{ if(text.includes('fh;')||text.includes('tuneCode')) isTune=true; }
+  if(isTune) location.href=`/tune/${id}`;
+  else location.href=`/sticker/${id}`;
 }
-
-async function loadGallery() {
-  const pasteId = getPasteId();
-  if (!pasteId) return;
-
-  const rawUrl = 'https://pastefy.app/' + pasteId + '/raw';
-  const text = await tryFetch(rawUrl);
-  if (!text) return;
-
-  document.getElementById('emptyState').style.display = 'none';
-  document.getElementById('mainContent').style.display = 'block';
-
-  let player = 'Sticker Pack';
-  const nameMatch = text.match(/^Stickers from:\\s*(.+)$/m);
-  if (nameMatch) player = nameMatch[1].trim();
-
-  let date = null;
-  try {
-    const parsed = JSON.parse(text);
-    if (parsed.player) player = parsed.player;
-    if (parsed.date) date = parsed.date;
-  } catch {}
-
-  document.getElementById('playerName').textContent = player;
-  document.getElementById('galleryMeta').textContent = date ? new Date(date).toLocaleString() : '';
-
-  const ids = parseIds(text);
-  const grid = document.getElementById('stickerGrid');
-
-  if (!ids.length) {
-    grid.innerHTML = '<div class="no-stickers">No stickers found.</div>';
-    document.getElementById('stickerCountLabel').textContent = 'Stickers';
-    return;
-  }
-
-  document.getElementById('stickerCountLabel').textContent = ids.length + ' Sticker' + (ids.length !== 1 ? 's' : '');
-
-  grid.innerHTML = ids.map(id => \`
-    <div class="sticker-item">
-      <img id="img-\${id}" src="https://placehold.co/144x144/0e0e16/444?text=..." alt="\${id}">
-      <div class="sticker-name">\${id}</div>
-    </div>\`).join('');
-
-  for (let i = 0; i < ids.length; i += 100) {
-    const chunk = ids.slice(i, i + 100);
-    const proxyUrl = 'https://thumbnails.roproxy.com/v1/assets?assetIds=' + chunk.join(',') + '&returnPolicy=PlaceHolder&size=420x420&format=Png';
-    fetch(proxyUrl)
-      .then(r => r.json())
-      .then(data => {
-        if (data && data.data) {
-          data.data.forEach(item => {
-            const imgEl = document.getElementById('img-' + item.targetId);
-            if (imgEl) {
-              imgEl.src = item.state === 'Completed' ? item.imageUrl : 'https://placehold.co/144x144/0e0e16/ff3333?text=N/A';
-            }
-          });
-        }
-      }).catch(() => {});
-  }
-}
-
-loadGallery();
+document.getElementById('paste').addEventListener('keydown',e=>{if(e.key==='Enter')loadId();});
+// auto load if ?id= present
+(function(){
+  const p=new URLSearchParams(location.search).get('id');
+  if(p){document.getElementById('paste').value=p;loadId();}
+})();
 </script>
 </body>
-</html>`;
-}
-
-const PORT = process.env.PORT || 3000;
-if (require.main === module) {
-    app.listen(PORT, () => console.log('[NexxToHubOnTop] http://localhost:' + PORT));
-}
-
-module.exports = app;
+</html>
