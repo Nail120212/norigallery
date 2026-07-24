@@ -24,11 +24,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nexxto Hub</title>
 <link rel="icon" href="/logo.png">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0c0c0d;--surface:#111113;--surface-2:#161618;--border:#1f1f22;--border-soft:#19191c;--text:#e8e8ea;--dim:#5a5a62;--mono:'DM Mono',monospace;--display:'Syne',sans-serif}
+:root{--bg:#0c0c0d;--surface:#111113;--surface-2:#161618;--border:#1f1f22;--border-soft:#19191c;--text:#e8e8ea;--dim:#a0a0a8;--mono:'Fredoka One',cursive;--display:'Fredoka One',cursive;--fredoka:'Fredoka One',cursive}
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:100vh;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--text);font-family:'Fredoka One',cursive;min-height:100vh;-webkit-font-smoothing:antialiased;letter-spacing:0.02em}
 header{height:60px;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 32px;justify-content:space-between;position:sticky;top:0;background:rgba(12,12,13,0.88);backdrop-filter:blur(16px);z-index:10}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
 .logo-title{font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:0.1em;text-transform:uppercase}
@@ -36,15 +36,15 @@ header{height:60px;border-bottom:1px solid var(--border);display:flex;align-item
 .logo-names{display:flex;flex-direction:column;gap:1px}
 main{max-width:1080px;margin:0 auto;padding:60px 32px 80px}
 .hero{margin-bottom:48px}
-.hero h1{font-family:var(--display);font-size:clamp(32px,6vw,56px);font-weight:800;line-height:0.95;letter-spacing:-0.02em;margin-bottom:16px}
-.hero p{font-size:12px;color:var(--dim);max-width:400px;line-height:1.6}
+.hero h1{font-family:'Fredoka One',cursive;font-size:clamp(36px,7vw,64px);font-weight:400;line-height:0.95;letter-spacing:0.02em;margin-bottom:16px;text-transform:uppercase}
+.hero p{font-size:12px;color:var(--dim);max-width:420px;line-height:1.6}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1px;background:var(--border-soft);border:1px solid var(--border-soft)}
-.card{background:var(--bg);padding:28px;display:flex;flex-direction:column;gap:18px;transition:background 0.15s;text-decoration:none;color:inherit}
-.card:hover{background:var(--surface)}
+.card{background:var(--bg);padding:28px;display:flex;flex-direction:column;gap:18px;transition:all 0.2s;text-decoration:none;color:inherit;border-radius:20px;border:1px solid var(--border-soft)}
+.card:hover{background:var(--surface);transform:translateY(-2px);border-color:#2a2a30}
 .card-top{display:flex;justify-content:space-between;align-items:center}
 .card-label{font-size:9px;color:var(--dim);letter-spacing:0.15em;text-transform:uppercase}
 .card-dot{width:5px;height:5px;background:var(--text);border-radius:50%}
-.card-title{font-family:var(--display);font-size:18px;font-weight:700}
+.card-title{font-family:'Fredoka One',cursive;font-size:22px;font-weight:400;letter-spacing:0.02em}
 .card-desc{font-size:11px;color:var(--dim);line-height:1.6}
 .card-foot{margin-top:auto;padding-top:18px;border-top:1px solid var(--border-soft);display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase}
 @media(max-width:600px){header{padding:0 20px}main{padding:32px 20px 60px}}
@@ -55,27 +55,27 @@ main{max-width:1080px;margin:0 auto;padding:60px 32px 80px}
 <a class="logo" href="/">
 <div class="logo-names">
 <span class="logo-title">Nexxto</span>
-<span class="logo-sub">Hub • nexgallery-ten.vercel.app</span>
+<span class="logo-sub">dnsgallery.netlify.app</span>
 </div>
 </a>
 </header>
 <main>
 <div class="hero">
-<h1>STICKER &<br>TUNE VAULT</h1>
-<p>All stolen stickers and tunes in one place. Pastefy powered, auto-scaled, gallery ready.</p>
+<h1>NEXXTO<br>HUB</h1>
+<p>Sticker & Tune Gallery. Use <code>/sticker/ID</code> and <code>/tune/ID</code>. Best Diesel N Steel Script.</p>
 </div>
 <div class="grid">
-<a class="card" href="/sticker.html">
+<a class="card" href="/sticker">
 <div class="card-top"><span class="card-label">Gallery / 01</span><span class="card-dot"></span></div>
 <div class="card-title">Sticker Gallery</div>
-<div class="card-desc">View, copy and preview all stolen decal IDs. Auto thumbnail from Roblox.</div>
-<div class="card-foot"><span>Open</span><span>→</span></div>
+<div class="card-desc">View, copy and preview all stolen decal IDs. Auto thumbnail from Roblox. Works with /sticker/ID and ?id=ID</div>
+<div class="card-foot"><span>Open /sticker</span><span>→</span></div>
 </a>
-<a class="card" href="/tune.html">
+<a class="card" href="/tune">
 <div class="card-top"><span class="card-label">Gallery / 02</span><span class="card-dot"></span></div>
 <div class="card-title">Tune Gallery</div>
-<div class="card-desc">Front / rear height, stiffness, dampening. Avatar, jeep name and code copy.</div>
-<div class="card-foot"><span>Open</span><span>→</span></div>
+<div class="card-desc">Front / rear height, stiffness, dampening. Avatar, jeep name and code copy. Works with /tune/ID</div>
+<div class="card-foot"><span>Open /tune</span><span>→</span></div>
 </a>
 </div>
 </main>
