@@ -1,0 +1,5 @@
+/sticker/:id  /sticker.html?id=:id  200
+/sticker  /sticker.html  200
+/tune/:id  /tune.html?id=:id  200
+/tune  /tune.html  200
+/:id  /sticker.html?id=:id  200
